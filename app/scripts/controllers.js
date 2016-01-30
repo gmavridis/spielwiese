@@ -94,6 +94,18 @@ angular.module('confusionApp')
         }])
 
         // implement the IndexController and About Controller here
+        .controller('IndexController', ['$scope', 'corporateFactory', 'menuFactory', function($scope, corporateFactory, menuFactory) {
 
+            $scope.dish = menuFactory.getDish(0);
+            $scope.promotion = menuFactory.getPromotion(0);
+            $scope.leader = menuFactory.getLeader(3);
+            //or get all leaders and iterate over them till i find the Executive Chief?
+            
+        }])
+        .controller('AboutController', ['$scope', 'corporateFactory',  function($scope, corporateFactory) {
+
+            $scope.leaders = corporateFactory.getLeaders();
+            
+        }])
 
 ;
