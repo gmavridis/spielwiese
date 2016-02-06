@@ -1,7 +1,10 @@
 
     <div class="container" ng-controller="ContactController">
         <div class="row row-content" ng-controller="DishDetailController">
-            <div class="col-xs-12">
+            <div class="col-xs-12" ng-if="!showDish">
+                <h3>{{message}}</h3>
+            </div>
+            <div class="col-xs-12" ng-if="showDish">
                 <button class="btn btn-xs btn-primary pull-right"
                     type="button" ui-sref="app.menu">
                     Back to Menu
@@ -19,7 +22,7 @@
                     <p>{{dish.description}}</p>
                 </div>
             </div>
-            <div class="col-xs-9 col-xs-offset-1">
+            <div class="col-xs-9 col-xs-offset-1" ng-if="showDish">
                 <h4>Customer comments: <input ng-model="order"></h4>
                 <blockquote ng-repeat="comment in dish.comments | orderBy:order">
                   <p>{{comment.rating}} Stars</p>
