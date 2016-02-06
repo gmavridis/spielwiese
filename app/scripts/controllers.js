@@ -8,8 +8,12 @@ angular.module('confusionApp')
             $scope.filtText = '';
             $scope.showDetails = false;
 
-            $scope.dishes= menuFactory.getDishes();
-
+            $scope.dishes= [];
+            menuFactory.getDishes().then(
+                function(response) {
+                    $scope.dishes = response.data;
+                }
+            );
                         
             $scope.select = function(setTab) {
                 $scope.tab = setTab;
@@ -54,7 +58,7 @@ angular.module('confusionApp')
                 
                 console.log($scope.feedback);
                 
-                if ($scope.feedback.agree && ($scope.feedback.mychannel == "")) {
+                if ($scope.feedback.agree && ($scope.feedback.mychannel === "")) {
                     $scope.invalidChannelSelection = true;
                     console.log('incorrect');
                 }
@@ -69,11 +73,14 @@ angular.module('confusionApp')
         }])
 
         .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function($scope, $stateParams, menuFactory) {
-
-            var dish= menuFactory.getDish(parseInt($stateParams.id,10));
-            
-            $scope.dish = dish;
-            
+                $scope.dish = {};
+                            menuFactory.getDish(parseInt($stateParams.id,10))
+                .then(
+                    function(response){
+                        $scope.dish = response.data;
+                        $scope.showDish=true;
+                    }
+                );
         }])
 
         .controller('DishCommentController', ['$scope', function($scope) {
@@ -95,11 +102,16 @@ angular.module('confusionApp')
 
         // implement the IndexController and About Controller here
         .controller('IndexController', ['$scope', 'corporateFactory', 'menuFactory', function($scope, corporateFactory, menuFactory) {
-
-            $scope.dish = menuFactory.getDish(0);
+            $scope.dish = {};
+            menuFactory.getDish(0)
+            .then(
+                function(response){
+                    $scope.dish = response.data;
+                    $scope.showDish = true;
+                }
+            );
             $scope.promotion = menuFactory.getPromotion(0);
-            $scope.leader = menuFactory.getLeader(3);
-            //or get all leaders and iterate over them till i find the Executive Chief?
+            $scope.leader = corporateFactory.getLeader(3);
             
         }])
         .controller('AboutController', ['$scope', 'corporateFactory',  function($scope, corporateFactory) {
