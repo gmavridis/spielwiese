@@ -57,7 +57,7 @@ angular.module('confusionApp')
                         
         }])
 
-        .controller('FeedbackController', ['$scope', function($scope) {
+        .controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope,feedbackFactory) {
             
             $scope.sendFeedback = function() {
                 
@@ -68,6 +68,16 @@ angular.module('confusionApp')
                     console.log('incorrect');
                 }
                 else {
+                    var Fb =feedbackFactory.getFeedback();
+                    var fbe = new Fb ($scope.feedback);
+                    fbe.$save().then(
+                        function(response) {
+                            //console.log("success: ",response);
+                        },
+                        function(response) {
+                            //console.log( "Error: "+response.status + " " + response.statusText);
+                        }
+                    );
                     $scope.invalidChannelSelection = false;
                     $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
                     $scope.feedback.mychannel="";
@@ -122,13 +132,44 @@ angular.module('confusionApp')
                     $scope.message = "Error: "+response.status + " " + response.statusText;
                 }
             );
-            $scope.promotion = menuFactory.getPromotion(0);
-            $scope.leader = corporateFactory.getLeader(3);
+            $scope.showPromotion = false;
+            $scope.promMessage="Loading ...";
+            $scope.promotion = menuFactory.getPromotions().get({id:0}).$promise.then(
+                function(response){
+                    $scope.promotion = response;
+                    $scope.showPromotion = true;
+                },
+                function(response) {
+                    $scope.promMessage = "Error: "+response.status + " " + response.statusText;
+                }
+            );
+            $scope.showLeader = false;
+            $scope.leaderMessage="Loading ...";
+            $scope.leader = corporateFactory.getLeaders().get({id:3}).$promise.then(
+                function(response){
+                    $scope.leader = response;
+                    $scope.showLeader = true;
+                },
+                function(response) {
+                    $scope.leaderMessage = "Error: "+response.status + " " + response.statusText;
+                }
+            );
+            //$scope.leader = corporateFactory.getLeader(3);
             
         }])
         .controller('AboutController', ['$scope', 'corporateFactory',  function($scope, corporateFactory) {
-
-            $scope.leaders = corporateFactory.getLeaders();
+            $scope.showLeader = false;
+            $scope.leaderMessage="Loading ...";
+            $scope.leaders = corporateFactory.getLeaders().query(
+                function(response){
+                    $scope.leaders = response;
+                    $scope.showLeader = true;
+                },
+                function(response) {
+                    $scope.leaderMessage = "Error: "+response.status + " " + response.statusText;
+                }
+            );
+            //$scope.leaders = corporateFactory.getLeaders();
             
         }])
 
